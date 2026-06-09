@@ -1,0 +1,73 @@
+@{
+    ViewData["Title"] = "Boletim Escolar";
+    var disciplinas = ViewBag.Disciplinas as List<string>;
+    var notas = ViewBag.Notas as List<double>;
+    
+    // Calculando a média geral
+    double soma = 0;
+    foreach (var nota in notas) {
+        soma += nota;
+    }
+    double mediaGeral = soma / notas.Count;
+}
+
+<h2>Boletim Escolar</h2>
+
+<table class="table table-striped" border="1" style="border-collapse: collapse; width: 100%; text-align: left; margin-bottom: 20px;">
+    <thead>
+        <tr style="background-color: #f2f2f2;">
+            <th>Disciplina</th>
+            <th>Nota</th>
+            <th>Status</th>
+            <th>Classificação</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (int i = 0; i < disciplinas.Count; i++)
+        {
+            // 1. Lógica do @if para definir o Status e a Cor
+            string status = "";
+            string corStatus = "";
+            
+            @if (notas[i] >= 6.0)
+            {
+                status = "Aprovado";
+                corStatus = "color: green; font-weight: bold;";
+            }
+            else
+            {
+                status = "Reprovado";
+                corStatus = "color: red; font-weight: bold;";
+            }
+
+            // 2. Lógica do @switch para classificar em letras (A, B, C, D)
+            string classificacao = "";
+            @switch (notas[i])
+            {
+                case double n when (n >= 9.0):
+                    classificacao = "A";
+                    break;
+                case double n when (n >= 7.0):
+                    classificacao = "B";
+                    break;
+                case double n when (n >= 5.0):
+                    classificacao = "C";
+                    break;
+                default:
+                    classificacao = "D";
+                    break;
+            }
+
+            <tr>
+                <td>@disciplinas[i]</td>
+                <td>@notas[i].ToString("F1")</td>
+                <td style="@corStatus">@status</td>
+                <td><strong>@classificacao</strong></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div style="background-color: #f8f9fa; padding: 15px; border-left: 5px solid #007bff;">
+    <h4>Média Geral do Aluno: <span style="color: #007bff;">@mediaGeral.ToString("F1")</span></h4>
+</div>
